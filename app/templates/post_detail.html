@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{{ post.title }}
+{% endblock %}
+
+{% block content %}
+
+<div class="card shadow-sm">
+
+    <div class="card-body">
+
+        <h2>
+            {{ post.title }}
+        </h2>
+
+        <p class="text-muted">
+            Предмет: {{ post.subject }}
+        </p>
+
+        <hr>
+
+        <p style="white-space: pre-line;">
+            {{ post.description }}
+        </p>
+
+        {% if post.file_path %}
+
+            <hr>
+
+            <div class="mb-3">
+
+                <a
+                    href="{{ url_for('static', filename='uploads/' + post.file_path) }}"
+                    class="btn btn-outline-primary"
+                    download>
+                    Скачать файл
+                </a>
+
+            </div>
+
+        {% endif %}
+
+        <hr>
+
+        <small class="text-secondary">
+
+            Автор:
+            {{ post.author.username }}
+
+            |
+
+            {{ post.created_at.strftime('%d.%m.%Y %H:%M') }}
+
+        </small>
+
+        {% if current_user.is_authenticated and current_user.id == post.user_id %}
+
+            <div class="mt-4">
+
+                <a
+                    href="{{ url_for(
+                        'posts.edit_post',
+                        post_id=post.id
+                    ) }}"
+                    class="btn btn-warning">
+                    Редактировать
+                </a>
+
+                <form
+                    action="{{ url_for(
+                        'posts.delete_post',
+                        post_id=post.id
+                    ) }}"
+                    method="POST"
+                    style="display:inline;">
+
+                    <button
+                        type="submit"
+                        class="btn btn-danger">
+                        Удалить
+                    </button>
+
+                </form>
+
+            </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% endblock %}
